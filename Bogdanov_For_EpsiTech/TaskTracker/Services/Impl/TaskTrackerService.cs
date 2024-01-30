@@ -1,4 +1,5 @@
 ﻿
+using Microsoft.EntityFrameworkCore;
 using TaskTracker.Context;
 using TaskTracker.Models;
 
@@ -21,14 +22,14 @@ namespace TaskTracker.Services.Impl
         /// </summary>
         /// <param name="task"></param>
         /// <exception cref="NullReferenceException"></exception>
-        public void CreateTask(MyTask task)
+        public async Task CreateTaskAsync(MyTask task)
         {
             if (task == null)
             {
                 throw new NullReferenceException();
             }
             _dbContext.Tasks.Add(task);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>
@@ -36,25 +37,25 @@ namespace TaskTracker.Services.Impl
         /// </summary>
         /// <param name="id"></param>
         /// <exception cref="KeyNotFoundException"></exception>
-        public void DeleteTask(int id)
+        public async Task DeleteTaskAsync(int id)
         {
-           MyTask? task = GetTaskById(id);
+           MyTask? task = await GetTaskByIdAsync(id);
            if (task == null)
             {
                 throw new KeyNotFoundException();               
             }
 
             _dbContext.Tasks.Remove(task);
-            _dbContext.SaveChanges();
+            await _dbContext.SaveChangesAsync();
         }
 
         /// <summary>
-        /// Метода для получения всех задач из базы данных.
+        /// Метод для получения всех задач из базы данных.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<MyTask> GetAllTasks()
+        public async Task<IEnumerable<MyTask>> GetAllTasksAsync()
         {
-            return _dbContext.Tasks.ToList();
+            return await _dbContext.Tasks.ToListAsync();
         }
 
         /// <summary>
@@ -62,9 +63,9 @@ namespace TaskTracker.Services.Impl
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public MyTask? GetTaskById(int id)
+        public async Task<MyTask?> GetTaskByIdAsync(int id)
         {
-            return _dbContext.Tasks.FirstOrDefault(t => t.Id == id);
+            return await _dbContext.Tasks.FirstOrDefaultAsync(t => t.Id == id);
         }
 
         /// <summary>
@@ -73,14 +74,14 @@ namespace TaskTracker.Services.Impl
         /// <param name="task"></param>
         /// <exception cref="NullReferenceException"></exception>
         /// <exception cref="KeyNotFoundException"></exception>
-        public void UpdateTask(MyTask task)
+        public async Task UpdateTaskAsync(MyTask task)
         {
             if (task == null)
             {
                 throw new NullReferenceException();
             }
 
-            MyTask? exsistTask = GetTaskById(task.Id);
+            MyTask? exsistTask = await GetTaskByIdAsync(task.Id);
             if (exsistTask == null)
             {
                 throw new KeyNotFoundException();
@@ -91,7 +92,7 @@ namespace TaskTracker.Services.Impl
             exsistTask.UpdatedDate = DateTime.UtcNow;
 
             _dbContext.Tasks.Update(exsistTask);
-            _dbContext.SaveChanges();           
+            await _dbContext.SaveChangesAsync();           
         }
     }
 }

@@ -23,9 +23,9 @@ namespace TaskTracker.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("get/{id}")]
-        public IActionResult GetById([FromQuery] int id)
+        public async Task<IActionResult> GetById([FromQuery] int id)
         {
-            return Ok(_service.GetTaskById(id));            
+            return Ok(await _service.GetTaskByIdAsync(id));            
         }
 
         /// <summary>
@@ -33,9 +33,9 @@ namespace TaskTracker.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("getall")]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            return Ok(_service.GetAllTasks());
+            return Ok(await _service.GetAllTasksAsync());
         }
 
         /// <summary>
@@ -44,11 +44,11 @@ namespace TaskTracker.Controllers
         /// <param name="task"></param>
         /// <returns></returns>
         [HttpPost("create")]
-        public IActionResult Create([FromBody] MyTask task)
+        public async Task<IActionResult> Create([FromBody] MyTask task)
         {
             try
             {
-                _service.CreateTask(task);
+                await _service.CreateTaskAsync(task);
                 return Created();
             }
             catch (NullReferenceException e)
@@ -64,11 +64,11 @@ namespace TaskTracker.Controllers
         /// <param name="task"></param>
         /// <returns></returns>
         [HttpPut("update")]
-        public IActionResult Update([FromBody] MyTask task)
+        public async Task<IActionResult> Update([FromBody] MyTask task)
         {
             try
             {
-                _service.UpdateTask(task);
+                await _service.UpdateTaskAsync(task);
                 return Created();
             }
             catch (NullReferenceException e)
@@ -89,11 +89,11 @@ namespace TaskTracker.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpDelete("delete/{id}")]
-        public IActionResult Delete([FromQuery] int id)
+        public async Task<IActionResult> Delete([FromQuery] int id)
         {
             try
             {
-                _service.DeleteTask(id);
+                await _service.DeleteTaskAsync(id);
                 return Ok();
             }            
             catch (KeyNotFoundException e)

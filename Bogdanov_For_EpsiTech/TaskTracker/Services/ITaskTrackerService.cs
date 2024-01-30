@@ -2,10 +2,10 @@
 {
     public interface ITaskTrackerService<T>
     {
-        T? GetTaskById(int id);
-        IEnumerable<T> GetAllTasks();
-        void CreateTask(T task);
-        void UpdateTask(T task);
-        void DeleteTask(int id);
+        Task<T?> GetTaskByIdAsync(int id);
+        Task<IEnumerable<T>> GetAllTasksAsync();
+        Task CreateTaskAsync(T task);
+        Task UpdateTaskAsync(T task);
+        Task DeleteTaskAsync(int id);
     }
 }
