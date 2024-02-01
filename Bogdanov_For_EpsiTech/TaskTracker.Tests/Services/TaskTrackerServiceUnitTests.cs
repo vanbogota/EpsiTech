@@ -18,7 +18,7 @@ namespace TaskTracker.Tests.Services
 
 
         [Fact]
-        public void CreateTask_Should_AddTaskToDbContext()
+        public async Task CreateTaskAsync_Should_AddTaskToDbContext()
         {
             // Arrange
             using (var dbContext = new ApplicationDbContext(_options))
@@ -28,7 +28,7 @@ namespace TaskTracker.Tests.Services
                 var task = new MyTask { Id = 1, Name = "Task 1", Description = "Description 1" };
 
                 // Act
-                service.CreateTask(task);
+                await service.CreateTaskAsync(task);
 
                 // Assert
                 Assert.Equal(1, dbContext.Tasks.Count());
@@ -36,7 +36,7 @@ namespace TaskTracker.Tests.Services
         }
 
         [Fact]
-        public void DeleteTask_Should_RemoveTaskFromDbContext()
+        public async Task DeleteTaskAsync_Should_RemoveTaskFromDbContext()
         {
             // Arrange         
 
@@ -48,10 +48,10 @@ namespace TaskTracker.Tests.Services
                 var task = new MyTask { Id = taskId, Name = "Task 1", Description = "Description 1" };
 
                 dbContext.Tasks.Add(task);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 // Act
-                service.DeleteTask(taskId);
+                await service.DeleteTaskAsync(taskId);
 
                 // Assert
                 Assert.Equal(0, dbContext.Tasks.Count());
@@ -59,7 +59,7 @@ namespace TaskTracker.Tests.Services
         }
 
         [Fact]
-        public void GetAllTasks_Should_ReturnAllTasksFromDbContext()
+        public async Task GetAllTasksAsync_Should_ReturnAllTasksFromDbContext()
         {
             // Arrange            
             using (var dbContext = new ApplicationDbContext(_options))
@@ -73,10 +73,10 @@ namespace TaskTracker.Tests.Services
             };
 
                 dbContext.Tasks.AddRange(tasks);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 // Act
-                var result = service.GetAllTasks();
+                var result = await service.GetAllTasksAsync();
 
                 // Assert
                 Assert.Equal(tasks, result);
@@ -84,7 +84,7 @@ namespace TaskTracker.Tests.Services
         }
 
         [Fact]
-        public void GetTaskById_Should_ReturnTaskFromDbContext()
+        public async Task GetTaskByIdAsync_Should_ReturnTaskFromDbContext()
         {
             // Arrange
             using (var dbContext = new ApplicationDbContext(_options))
@@ -95,10 +95,10 @@ namespace TaskTracker.Tests.Services
                 var task = new MyTask { Id = taskId, Name = "Task 1", Description = "Description 1" };
 
                 dbContext.Tasks.Add(task);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 // Act
-                var result = service.GetTaskById(taskId);
+                var result = await service.GetTaskByIdAsync(taskId);
 
                 // Assert
                 Assert.Equal(task, result);
@@ -106,7 +106,7 @@ namespace TaskTracker.Tests.Services
         }
 
         [Fact]
-        public void UpdateTask_Should_UpdateTaskInDbContext()
+        public async Task UpdateTaskAsync_Should_UpdateTaskInDbContext()
         {
             // Arrange
             using (var dbContext = new ApplicationDbContext(_options))
@@ -118,10 +118,10 @@ namespace TaskTracker.Tests.Services
                 var updatedTask = new MyTask { Id = taskId, Name = "Updated Task", Description = "Updated Description" };
 
                 dbContext.Tasks.Add(existingTask);
-                dbContext.SaveChanges();
+                await dbContext.SaveChangesAsync();
 
                 // Act
-                service.UpdateTask(updatedTask);
+                await service.UpdateTaskAsync(updatedTask);
 
                 // Assert
                 Assert.Equal("Updated Task", existingTask.Name);
@@ -130,7 +130,7 @@ namespace TaskTracker.Tests.Services
             }
         }
         [Fact]
-        public void CreateTask_Should_ThrowException_WhenTaskIsNull()
+        public async Task CreateTaskAsync_Should_ThrowException_WhenTaskIsNull()
         {
             // Arrange
             using (var dbContext = new ApplicationDbContext(_options))
@@ -138,12 +138,12 @@ namespace TaskTracker.Tests.Services
                 var service = new TaskTrackerService(dbContext);
 
                 // Act & Assert
-                Assert.Throws<NullReferenceException>(() => service.CreateTask(null));
+                await Assert.ThrowsAsync<NullReferenceException>(async () => await service.CreateTaskAsync(null));
             }
         }
 
         [Fact]
-        public void DeleteTask_Should_ThrowException_WhenTaskNotFound()
+        public async Task DeleteTaskAsync_Should_ThrowException_WhenTaskNotFound()
         {
             // Arrange
            using (var dbContext = new ApplicationDbContext(_options))
@@ -151,12 +151,12 @@ namespace TaskTracker.Tests.Services
                 var service = new TaskTrackerService(dbContext);
 
                 // Act & Assert
-                Assert.Throws<KeyNotFoundException>(() => service.DeleteTask(1));
+                await Assert.ThrowsAsync<KeyNotFoundException>(async () => await service.DeleteTaskAsync(1));
             }
         }
 
         [Fact]
-        public void UpdateTask_Should_ThrowException_WhenTaskIsNull()
+        public async Task UpdateTaskAsync_Should_ThrowException_WhenTaskIsNull()
         {
             // Arrange            
             using (var dbContext = new ApplicationDbContext(_options))
@@ -164,12 +164,12 @@ namespace TaskTracker.Tests.Services
                 var service = new TaskTrackerService(dbContext);
 
                 // Act & Assert
-                Assert.Throws<NullReferenceException>(() => service.UpdateTask(null));
+                await Assert.ThrowsAsync<NullReferenceException>(async () => await service.UpdateTaskAsync(null));
             }
         }
 
         [Fact]
-        public void UpdateTask_Should_ThrowException_WhenTaskNotFound()
+        public async Task UpdateTaskAsync_Should_ThrowException_WhenTaskNotFound()
         {
             // Arrange
            using (var dbContext = new ApplicationDbContext(_options))
@@ -177,7 +177,7 @@ namespace TaskTracker.Tests.Services
                 var service = new TaskTrackerService(dbContext);
 
                 // Act & Assert
-                Assert.Throws<KeyNotFoundException>(() => service.UpdateTask(new MyTask { Id = 1 }));
+                await Assert.ThrowsAsync<KeyNotFoundException>(async () => await service.UpdateTaskAsync(new MyTask { Id = 1 }));
             }
         }
     }
